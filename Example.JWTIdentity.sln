@@ -12,6 +12,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity.Authentication", "src\Identity.Authentication\Identity.Authentication.csproj", "{3326BF5F-BDBA-465D-A7A7-0A58D2E9D529}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{564C55B6-5120-42B9-94CB-BECBEE1EA9F2}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQLServer", "SQLServer", "{A31961E4-1337-4421-BB37-77A575BB47D7}"
 	ProjectSection(SolutionItems) = preProject
