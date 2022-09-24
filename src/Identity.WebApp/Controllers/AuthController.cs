@@ -47,13 +47,11 @@ public class AuthController : ControllerBase
     {
         var response = await identityService.RegisterAsync(request);
 
-        return StatusCode(response.Succeeded ? StatusCodes.Status200OK : StatusCodes.Status400BadRequest, response);
+        if (response.Succeeded)
+        {
+            return Ok(response);
+        }
 
-        //if (response.Succeeded)
-        //{
-        //    return Ok(response);
-        //}
-
-        //return BadRequest(response);
+        return BadRequest(response);
     }
 }

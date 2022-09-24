@@ -1,9 +1,10 @@
+using System.Reflection;
+using System.Text;
 using Identity.Authentication;
 using Identity.Authentication.Entities;
 using Identity.Authentication.Requirements;
 using Identity.BusinessLayer.Services;
 using Identity.BusinessLayer.Settings;
-using Identity.WebApp.Services;
 using Identity.WebApp.StartupTasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -11,9 +12,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
-using System.IdentityModel.Tokens.Jwt;
-using System.Reflection;
-using System.Text;
 
 namespace Identity.WebApp;
 
@@ -35,7 +33,12 @@ public class Startup
 
         services.AddSwaggerGen(options =>
         {
-            options.SwaggerDoc("v1", new OpenApiInfo { Title = "Identity", Version = "v1" });
+            options.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = "Identity",
+                Version = "v1"
+            });
+
             options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
             {
                 In = ParameterLocation.Header,
@@ -61,12 +64,13 @@ public class Startup
 
             var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+
             options.IncludeXmlComments(xmlPath);
         });
 
         var connectionString = Configuration.GetSection("ConnectionStrings").GetValue<string>("Default");
-        services.AddSqlServer<AuthenticationDbContext>(connectionString);
 
+        services.AddSqlServer<AuthenticationDbContext>(connectionString);
         services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
         {
             options.User.RequireUniqueEmail = true;
@@ -84,6 +88,7 @@ public class Startup
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         })
+
         .AddJwtBearer(options =>
         {
             options.TokenValidationParameters = new TokenValidationParameters
@@ -100,7 +105,7 @@ public class Startup
             };
         });
 
-        services.AddSingleton<IAuthorizationHandler, MinimumAgeHandler>();
+        //services.AddSingleton<IAuthorizationHandler, MinimumAgeHandler>();
         services.AddScoped<IAuthorizationHandler, UserActiveHandler>();
 
         services.AddAuthorization(options =>
@@ -116,20 +121,20 @@ public class Startup
                 policy.RequireClaim(CustomClaimTypes.ApplicationId, "42");
             });
 
-            options.AddPolicy("TaggiaUser", policy =>
-            {
-                policy.RequireClaim(JwtRegisteredClaimNames.Iss, "Taggia");
-            });
+            //options.AddPolicy("TaggiaUser", policy =>
+            //{
+            //    policy.RequireClaim(JwtRegisteredClaimNames.Iss, "Taggia");
+            //});
 
-            options.AddPolicy("18", policy =>
-            {
-                policy.Requirements.Add(new MinimumAgeRequirement(18));
-            });
+            //options.AddPolicy("18", policy =>
+            //{
+            //    policy.Requirements.Add(new MinimumAgeRequirement(18));
+            //});
 
-            options.AddPolicy("21", policy =>
-            {
-                policy.Requirements.Add(new MinimumAgeRequirement(21));
-            });
+            //options.AddPolicy("21", policy =>
+            //{
+            //    policy.Requirements.Add(new MinimumAgeRequirement(21));
+            //});
         });
 
         // Uncomment if you want to use the old password hashing format for both login and registration.
